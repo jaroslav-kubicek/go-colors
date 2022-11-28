@@ -1,0 +1,8 @@
+linters:
+  enable-all: true
+  disable-all: false
+  fast: false
+  disable:  
+    - paralleltest
+    - tenv
+    - gochecknoglobals
