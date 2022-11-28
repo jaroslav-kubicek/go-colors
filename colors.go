@@ -1,7 +1,8 @@
-package gocolors
+package colors
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -72,16 +73,26 @@ func New(value ...ColorCode) *Color {
 }
 
 func (c *Color) Format(value string) string {
-	start := make([]string, len(c.params))
+	if noColorsAllowed() {
+		return value
+	}
+
+	start := make([]string, 0)
 	end := make([]string, len(c.params))
 
-	for _, color := range c.params {
+	for i, color := range c.params {
 		start = append(start, fmt.Sprintf("\u001b[%dm", color.start))
-		end = append(end, fmt.Sprintf("\u001b[%dm", color.end))
+		end[i] = fmt.Sprintf("\u001b[%dm", color.end)
 	}
 
 	start = append(start, value)
 	start = append(start, end...)
 
 	return strings.Join(start, "")
+}
+
+func noColorsAllowed() bool {
+	_, exists := os.LookupEnv("NO_COLOR")
+
+	return exists
 }
